@@ -1,0 +1,15 @@
+{
+  "name": "root",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^3.13.1"
+  },
+  "dependencies": {
+    "apollo-server": "^2.4.8",
+    "dotenv": "^7.0.0",
+    "graphql": "^14.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "sequelize": "^5.2.7",
+    "sqlite3": "^4.0.6"
+  }
+}
