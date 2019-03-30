@@ -32,5 +32,6 @@ The project is split into two folders:
 To run the project, first run these commands:
 
 ```bash
-lerna bootstrap
+$ npm install (installs lerna)
+$ lerna bootstrap (connects all the packages)
 ```
