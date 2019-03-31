@@ -126,7 +126,7 @@ const getAllPosts = () => posts;
 const findPostByPostId = postId =>
   posts.find(post => post.id === Number(postId));
 const filterPostsByUserId = userId =>
-  posts.filter(post => userId === post.authorId);
+  posts.filter(post => post.authorId === Number(userId));
 
 const updateUserInfo = (userId, data) =>
   Object.assign(findUserByUserId(userId), data);
