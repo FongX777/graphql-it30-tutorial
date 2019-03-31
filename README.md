@@ -37,3 +37,8 @@ To run the project, first run these commands:
 $ npm install (installs lerna)
 $ lerna bootstrap (connects all the packages)
 ```
+
+## References
+
+- https://www.apollographql.com/docs/apollo-server/features/testing
+- https://circleci.com/docs/2.0/language-javascript/
