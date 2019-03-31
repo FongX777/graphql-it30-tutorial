@@ -29,7 +29,7 @@
   },
   "scripts": {
     "lerna:install": "./node_modules/lerna/bin/lerna.js bootstrap --hoist",
-    "lerna:test": "./node_modules/lerna/bin/lerna.js run test",
-    "test": "npm run lerna:test"
+    "bootstrap": "lerna bootstrap --hoist",
+    "test": "lerna run test"
   }
 }
