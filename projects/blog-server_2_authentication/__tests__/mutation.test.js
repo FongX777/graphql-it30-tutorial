@@ -2,14 +2,6 @@ const { gql } = require('apollo-server');
 const { createTestClient } = require('apollo-server-testing');
 const { constructTestServer } = require('./__utils');
 
-const LOG_IN = gql`
-  mutation {
-    login(email: "fong@test.com", password: "123456") {
-      token
-    }
-  }
-`;
-
 const UPDATE_MY_INFO = gql`
   mutation {
     updateMyInfo(input: { name: "fx", age: 100 }) {
