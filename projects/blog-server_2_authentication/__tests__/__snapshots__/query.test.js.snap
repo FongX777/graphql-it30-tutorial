@@ -1,0 +1,184 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Queries fetches all posts 1`] = `
+Object {
+  "data": Object {
+    "posts": Array [
+      Object {
+        "author": Object {
+          "id": "1",
+          "name": "Fong",
+        },
+        "body": "This is my first post",
+        "id": "1",
+        "likeGivers": Array [
+          Object {
+            "id": "2",
+            "name": "Kevin",
+          },
+        ],
+        "title": "Hello World",
+      },
+      Object {
+        "author": Object {
+          "id": "2",
+          "name": "Kevin",
+        },
+        "body": "Hello My Friend!",
+        "id": "2",
+        "likeGivers": Array [],
+        "title": "Nice Day",
+      },
+    ],
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Queries fetches all users 1`] = `
+Object {
+  "data": Object {
+    "users": Array [
+      Object {
+        "email": "fong@test.com",
+        "id": "1",
+        "name": "Fong",
+        "posts": Array [
+          Object {
+            "author": Object {
+              "id": "1",
+              "name": "Fong",
+            },
+            "body": "This is my first post",
+            "id": "1",
+            "likeGivers": Array [
+              Object {
+                "id": "2",
+                "name": "Kevin",
+              },
+            ],
+            "title": "Hello World",
+          },
+        ],
+      },
+      Object {
+        "email": "kevin@test.com",
+        "id": "2",
+        "name": "Kevin",
+        "posts": Array [
+          Object {
+            "author": Object {
+              "id": "2",
+              "name": "Kevin",
+            },
+            "body": "Hello My Friend!",
+            "id": "2",
+            "likeGivers": Array [],
+            "title": "Nice Day",
+          },
+        ],
+      },
+      Object {
+        "email": "mary@test.com",
+        "id": "3",
+        "name": "Mary",
+        "posts": Array [],
+      },
+    ],
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Queries fetches single post 1`] = `
+Object {
+  "data": Object {
+    "post": Object {
+      "author": Object {
+        "id": "1",
+        "name": "Fong",
+      },
+      "body": "This is my first post",
+      "id": "1",
+      "likeGivers": Array [
+        Object {
+          "id": "2",
+          "name": "Kevin",
+        },
+      ],
+      "title": "Hello World",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Queries fetches single user 1`] = `
+Object {
+  "data": Object {
+    "user": Object {
+      "email": "fong@test.com",
+      "id": "1",
+      "name": "Fong",
+      "posts": Array [
+        Object {
+          "body": "This is my first post",
+          "id": "1",
+          "title": "Hello World",
+        },
+      ],
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Queries fetches the current user 1`] = `
+Object {
+  "data": Object {
+    "me": Object {
+      "email": "fong@test.com",
+      "id": "1",
+      "name": "Fong",
+      "posts": Array [
+        Object {
+          "body": "This is my first post",
+          "id": "1",
+          "title": "Hello World",
+        },
+      ],
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;

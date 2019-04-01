@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Mutations - Positive Tests add a post 1`] = `
+Object {
+  "data": Object {
+    "addPost": Object {
+      "author": Object {
+        "id": "1",
+        "name": "fx",
+      },
+      "body": "testinggggg",
+      "id": "3",
+      "title": "Hello World2",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Mutations - Positive Tests like a post 1`] = `
+Object {
+  "data": Object {
+    "likePost": Object {
+      "author": Object {
+        "name": "Kevin",
+      },
+      "body": "Hello My Friend!",
+      "id": "2",
+      "likeGivers": Array [
+        Object {
+          "age": 100,
+          "id": "1",
+          "name": "fx",
+        },
+      ],
+      "title": "Nice Day",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Mutations - Positive Tests update my info 1`] = `
+Object {
+  "data": Object {
+    "updateMyInfo": Object {
+      "age": 100,
+      "email": "fong@test.com",
+      "id": "1",
+      "name": "fx",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`New Mutations Login 1`] = `
+Object {
+  "data": Object {
+    "login": Object {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJmb25nQHRlc3QuY29tIiwibmFtZSI6ImZ4IiwiaWF0IjoxNTU0MTMwODExLCJleHAiOjE1NTQyMTcyMTF9.azUqSn8LbL3FJX14a9KdWipy8OdEOwvhMPy2oTG-Wrg",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
