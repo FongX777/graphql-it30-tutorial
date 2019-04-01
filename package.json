@@ -28,8 +28,8 @@
     ]
   },
   "scripts": {
-    "lerna:install": "./node_modules/lerna/bin/lerna.js bootstrap --hoist",
     "bootstrap": "lerna bootstrap --hoist",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "lint": "eslint ./projects"
   }
 }
