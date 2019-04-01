@@ -80,21 +80,3 @@ describe('Mutations - Positive Tests', () => {
     expect(res).toMatchSnapshot();
   });
 });
-
-describe('New Mutations', () => {
-  let mutate;
-  let server;
-  beforeEach(() => {
-    server = constructTestServer({
-      context: () => ({
-        me: { id: 1, email: 'fong@test.com', name: 'fong' }
-      })
-    }).server;
-    mutate = createTestClient(server).mutate;
-  });
-
-  it('Login', async () => {
-    const res = await mutate({ mutation: LOG_IN });
-    expect(res).toMatchSnapshot();
-  });
-});
