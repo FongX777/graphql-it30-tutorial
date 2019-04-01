@@ -76,7 +76,7 @@ exports[`New Mutations Login 1`] = `
 Object {
   "data": Object {
     "login": Object {
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJmb25nQHRlc3QuY29tIiwibmFtZSI6ImZ4IiwiaWF0IjoxNTU0MTMwOTU2LCJleHAiOjE1NTQyMTczNTZ9.YOgvc2yEPByRUlPjwjLVveeDelRqQiqmeaTX_BTaz2Q",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJmb25nQHRlc3QuY29tIiwibmFtZSI6ImZ4IiwiaWF0IjoxNTU0MTMwOTc4LCJleHAiOjE1NTQyMTczNzh9.TiTArlXYSZFzUNYUl4nKrSdRHLY6RE2pXYlYU9ZZEPg",
     },
   },
   "errors": undefined,
