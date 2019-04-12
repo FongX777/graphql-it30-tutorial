@@ -185,7 +185,7 @@ const resolvers = {
 
 不過過多的 function 難以管理，將他們 Model 化！
 
-1. 新增 `model/user.js` 將 user 的資料與 helper functions 放進去並 eport 出來
+1. 新增 `model/user.js` 將 user 的資料與 helper functions 放進去並 export 出來
 
 ```js
 const users = [ ... ];

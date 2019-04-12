@@ -1,0 +1,29 @@
+{
+  "name": "blog-server-3",
+  "version": "1.0.0",
+  "description": "GraphQL blog server tutorial - 3",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "NODE_ENV=test jest --updateSnapshot"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^2.4.8",
+    "bcrypt": "^3.0.5",
+    "graphql": "^14.2.0",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "apollo-server-testing": "^2.4.8",
+    "jest": "^24.5.0"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "__utils"
+    ]
+  }
+}
