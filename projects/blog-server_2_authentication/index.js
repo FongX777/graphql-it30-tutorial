@@ -194,13 +194,11 @@ const resolvers = {
 
       return updateUserInfo(me.id, data);
     }),
-    addPost: (parent, { input }, { me }) => {
-      if (!me) throw new Error('Plz Log In First');
+    addPost: isAuthenticated((parent, { input }, { me }) => {
       const { title, body } = input;
       return addPost({ authorId: me.id, title, body });
-    },
-    likePost: (parent, { postId }, { me }) => {
-      if (!me) throw new Error('Plz Log In First');
+    }),
+    likePost: isAuthenticated((parent, { postId }, { me }) => {
       const post = findPostByPostId(postId);
 
       if (!post) throw new Error(`Post ${postId} Not Exists`);
@@ -214,7 +212,7 @@ const resolvers = {
       return updatePost(postId, {
         likeGiverIds: post.likeGiverIds.filter(id => id === me.id)
       });
-    },
+    }),
     signUp: async (root, { name, email, password }, context) => {
       // 1. 檢查不能有重複註冊 email
       const isUserEmailDuplicate = users.some(user => user.email === email);
