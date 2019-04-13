@@ -8,13 +8,11 @@ const jwt = require('jsonwebtoken');
 const SALT_ROUNDS = Number(process.env.SALT_ROUNDS);
 const SECRET = process.env.SECRET;
 
-// 3. Initate a Web Server, Need typeDefs (Schema) and resolvers (Resolver)
+const dataSources = () => ({ userModel, postModel });
 const server = new ApolloServer({
-  // Schema 部分
   typeDefs,
-  // Resolver 部分
   resolvers,
-  dataSources: () => ({ userModel, postModel }),
+  dataSources,
   context: async ({ req }) => {
     const context = { secret: SECRET, saltRounds: SALT_ROUNDS };
     const token = req.headers['x-token'];
@@ -40,5 +38,6 @@ if (process.env.NODE_ENV !== 'test') {
 module.exports = {
   ApolloServer,
   typeDefs,
-  resolvers
+  resolvers,
+  dataSources
 };

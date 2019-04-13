@@ -3,11 +3,35 @@
 exports[`Queries fetches all posts 1`] = `
 Object {
   "data": Object {
-    "posts": null,
+    "posts": Array [
+      Object {
+        "author": Object {
+          "id": "1",
+          "name": "Fong",
+        },
+        "body": "This is my first post",
+        "id": "1",
+        "likeGivers": Array [
+          Object {
+            "id": "2",
+            "name": "Kevin",
+          },
+        ],
+        "title": "Hello World",
+      },
+      Object {
+        "author": Object {
+          "id": "2",
+          "name": "Kevin",
+        },
+        "body": "Hello My Friend!",
+        "id": "2",
+        "likeGivers": Array [],
+        "title": "Nice Day",
+      },
+    ],
   },
-  "errors": Array [
-    [GraphQLError: Cannot read property 'postModel' of undefined],
-  ],
+  "errors": undefined,
   "extensions": undefined,
   "http": Object {
     "headers": Headers {
@@ -20,11 +44,55 @@ Object {
 exports[`Queries fetches all users 1`] = `
 Object {
   "data": Object {
-    "users": null,
+    "users": Array [
+      Object {
+        "email": "fong@test.com",
+        "id": "1",
+        "name": "Fong",
+        "posts": Array [
+          Object {
+            "author": Object {
+              "id": "1",
+              "name": "Fong",
+            },
+            "body": "This is my first post",
+            "id": "1",
+            "likeGivers": Array [
+              Object {
+                "id": "2",
+                "name": "Kevin",
+              },
+            ],
+            "title": "Hello World",
+          },
+        ],
+      },
+      Object {
+        "email": "kevin@test.com",
+        "id": "2",
+        "name": "Kevin",
+        "posts": Array [
+          Object {
+            "author": Object {
+              "id": "2",
+              "name": "Kevin",
+            },
+            "body": "Hello My Friend!",
+            "id": "2",
+            "likeGivers": Array [],
+            "title": "Nice Day",
+          },
+        ],
+      },
+      Object {
+        "email": "mary@test.com",
+        "id": "3",
+        "name": "Mary",
+        "posts": Array [],
+      },
+    ],
   },
-  "errors": Array [
-    [GraphQLError: Cannot read property 'userModel' of undefined],
-  ],
+  "errors": undefined,
   "extensions": undefined,
   "http": Object {
     "headers": Headers {
@@ -37,11 +105,23 @@ Object {
 exports[`Queries fetches single post 1`] = `
 Object {
   "data": Object {
-    "post": null,
+    "post": Object {
+      "author": Object {
+        "id": "1",
+        "name": "Fong",
+      },
+      "body": "This is my first post",
+      "id": "1",
+      "likeGivers": Array [
+        Object {
+          "id": "2",
+          "name": "Kevin",
+        },
+      ],
+      "title": "Hello World",
+    },
   },
-  "errors": Array [
-    [GraphQLError: Cannot read property 'postModel' of undefined],
-  ],
+  "errors": undefined,
   "extensions": undefined,
   "http": Object {
     "headers": Headers {
@@ -54,11 +134,20 @@ Object {
 exports[`Queries fetches single user 1`] = `
 Object {
   "data": Object {
-    "user": null,
+    "user": Object {
+      "email": "fong@test.com",
+      "id": "1",
+      "name": "Fong",
+      "posts": Array [
+        Object {
+          "body": "This is my first post",
+          "id": "1",
+          "title": "Hello World",
+        },
+      ],
+    },
   },
-  "errors": Array [
-    [GraphQLError: Cannot read property 'userModel' of undefined],
-  ],
+  "errors": undefined,
   "extensions": undefined,
   "http": Object {
     "headers": Headers {
@@ -71,11 +160,20 @@ Object {
 exports[`Queries fetches the current user 1`] = `
 Object {
   "data": Object {
-    "me": null,
+    "me": Object {
+      "email": "fong@test.com",
+      "id": "1",
+      "name": "Fong",
+      "posts": Array [
+        Object {
+          "body": "This is my first post",
+          "id": "1",
+          "title": "Hello World",
+        },
+      ],
+    },
   },
-  "errors": Array [
-    [GraphQLError: Cannot read property 'userModel' of undefined],
-  ],
+  "errors": undefined,
   "extensions": undefined,
   "http": Object {
     "headers": Headers {

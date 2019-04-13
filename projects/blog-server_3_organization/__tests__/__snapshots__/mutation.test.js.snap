@@ -3,11 +3,17 @@
 exports[`Mutations - Positive Tests add a post 1`] = `
 Object {
   "data": Object {
-    "addPost": null,
+    "addPost": Object {
+      "author": Object {
+        "id": "1",
+        "name": "fx",
+      },
+      "body": "testinggggg",
+      "id": "3",
+      "title": "Hello World2",
+    },
   },
-  "errors": Array [
-    [GraphQLError: Cannot read property 'postModel' of undefined],
-  ],
+  "errors": undefined,
   "extensions": undefined,
   "http": Object {
     "headers": Headers {
@@ -20,11 +26,23 @@ Object {
 exports[`Mutations - Positive Tests like a post 1`] = `
 Object {
   "data": Object {
-    "likePost": null,
+    "likePost": Object {
+      "author": Object {
+        "name": "Kevin",
+      },
+      "body": "Hello My Friend!",
+      "id": "2",
+      "likeGivers": Array [
+        Object {
+          "age": 100,
+          "id": "1",
+          "name": "fx",
+        },
+      ],
+      "title": "Nice Day",
+    },
   },
-  "errors": Array [
-    [GraphQLError: Cannot read property 'postModel' of undefined],
-  ],
+  "errors": undefined,
   "extensions": undefined,
   "http": Object {
     "headers": Headers {
@@ -37,11 +55,14 @@ Object {
 exports[`Mutations - Positive Tests update my info 1`] = `
 Object {
   "data": Object {
-    "updateMyInfo": null,
+    "updateMyInfo": Object {
+      "age": 100,
+      "email": "fong@test.com",
+      "id": "1",
+      "name": "fx",
+    },
   },
-  "errors": Array [
-    [GraphQLError: Cannot read property 'userModel' of undefined],
-  ],
+  "errors": undefined,
   "extensions": undefined,
   "http": Object {
     "headers": Headers {
