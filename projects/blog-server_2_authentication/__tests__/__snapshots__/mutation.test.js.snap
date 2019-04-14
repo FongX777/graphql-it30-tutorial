@@ -1,5 +1,107 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Mutations - Negative Tests Not Logged In. add a post 1`] = `
+Object {
+  "data": Object {
+    "addPost": null,
+  },
+  "errors": Array [
+    [GraphQLError: Not Logged In.],
+  ],
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Mutations - Negative Tests Not Logged In. like a post 1`] = `
+Object {
+  "data": Object {
+    "likePost": null,
+  },
+  "errors": Array [
+    [GraphQLError: Not Logged In.],
+  ],
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Mutations - Negative Tests Not Logged In. update my info 1`] = `
+Object {
+  "data": Object {
+    "updateMyInfo": null,
+  },
+  "errors": Array [
+    [GraphQLError: Not Logged In.],
+  ],
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Mutations - Negative Tests login with false email 1`] = `
+Object {
+  "data": Object {
+    "login": null,
+  },
+  "errors": Array [
+    [GraphQLError: Email Account Not Exists],
+  ],
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Mutations - Negative Tests login with false password 1`] = `
+Object {
+  "data": Object {
+    "login": null,
+  },
+  "errors": Array [
+    [GraphQLError: Wrong Password],
+  ],
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Mutations - Negative Tests signup with duplicate email 1`] = `
+Object {
+  "data": Object {
+    "signUp": null,
+  },
+  "errors": Array [
+    [GraphQLError: User Email Duplicate],
+  ],
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
 exports[`Mutations - Positive Tests add a post 1`] = `
 Object {
   "data": Object {

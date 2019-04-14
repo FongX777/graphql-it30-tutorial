@@ -134,6 +134,7 @@ const filterUsersByUserIds = userIds =>
   users.filter(user => userIds.includes(user.id));
 const findUserByUserId = userId =>
   users.find(user => user.id === Number(userId));
+const findUserByEmail = email => users.find(user => user.email === email);
 
 const getAllPosts = () => posts;
 const findPostByPostId = postId =>
@@ -145,7 +146,7 @@ const updateUserInfo = (userId, data) =>
   Object.assign(findUserByUserId(userId), data);
 const addPost = ({ authorId, title, body }) =>
   (posts[posts.length] = {
-    id: posts[posts.length - 1].id + 1,
+    id: posts.length + 1,
     authorId: Number(authorId),
     title,
     body,
@@ -159,7 +160,7 @@ const updatePost = (postId, data) =>
 const hash = text => bcrypt.hash(text, SALT_ROUNDS);
 const addUser = ({ name, email, password }) =>
   (users[users.length] = {
-    id: users[users.length - 1].id + 1,
+    id: users.length + 1,
     name,
     email,
     password
@@ -185,37 +186,32 @@ const resolvers = {
     post: (root, { id }, context) => findPostByPostId(id)
   },
   Mutation: {
-    updateMyInfo: isAuthenticated((parent, { input }, { me }) => {
-      // 過濾空值
-      const data = ['name', 'age'].reduce(
-        (obj, key) => (input[key] ? { ...obj, [key]: input[key] } : obj),
-        {}
-      );
-
-      return updateUserInfo(me.id, data);
-    }),
-    addPost: isAuthenticated((parent, { input }, { me }) => {
-      const { title, body } = input;
-      return addPost({ authorId: me.id, title, body });
-    }),
+    updateMyInfo: isAuthenticated((parent, { input }, { me }) =>
+      updateUserInfo(me.id, input)
+    ),
+    addPost: isAuthenticated((parent, { input: { title, body } }, { me }) =>
+      addPost({ authorId: me.id, title, body })
+    ),
     likePost: isAuthenticated((parent, { postId }, { me }) => {
       const post = findPostByPostId(postId);
 
       if (!post) throw new Error(`Post ${postId} Not Exists`);
 
-      if (!post.likeGiverIds.includes(postId)) {
+      // 如果尚未按過讚
+      if (!post.likeGiverIds.includes(me.id)) {
         return updatePost(postId, {
           likeGiverIds: post.likeGiverIds.concat(me.id)
         });
       }
 
+      // 如果已經按過讚，就取消
       return updatePost(postId, {
-        likeGiverIds: post.likeGiverIds.filter(id => id === me.id)
+        likeGiverIds: post.likeGiverIds.filter(id => id !== me.id)
       });
     }),
     signUp: async (root, { name, email, password }, context) => {
       // 1. 檢查不能有重複註冊 email
-      const isUserEmailDuplicate = users.some(user => user.email === email);
+      const isUserEmailDuplicate = Boolean(findUserByEmail(email));
       if (isUserEmailDuplicate) throw new Error('User Email Duplicate');
 
       // 2. 將 passwrod 加密再存進去。非常重要 !!
@@ -225,7 +221,7 @@ const resolvers = {
     },
     login: async (root, { email, password }, context) => {
       // 1. 透過 email 找到相對應的 user
-      const user = users.find(user => user.email === email);
+      const user = findUserByEmail(email);
       if (!user) throw new Error('Email Account Not Exists');
 
       // 2. 將傳進來的 password 與資料庫存的 user.password 做比對
