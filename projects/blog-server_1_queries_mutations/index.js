@@ -132,7 +132,7 @@ const updateUserInfo = (userId, data) =>
   Object.assign(findUserByUserId(userId), data);
 const addPost = ({ authorId, title, body }) =>
   (posts[posts.length] = {
-    id: posts[posts.length - 1].id + 1,
+    id: posts.length + 1,
     authorId,
     title,
     body,
@@ -144,6 +144,7 @@ const updatePost = (postId, data) =>
   Object.assign(findPostByPostId(postId), data);
 
 // 2. Resolvers 是一個會對照 Schema 中 field 的 function map ，讓你可以計算並回傳資料給 GraphQL Server
+// A resolver is a function that resolves a value for a type or field in a schema.
 const resolvers = {
   Query: {
     hello: () => 'world',
@@ -154,32 +155,26 @@ const resolvers = {
     post: (root, { id }, context) => findPostByPostId(id)
   },
   Mutation: {
-    updateMyInfo: (parent, { input }, context) => {
-      // 過濾空值
-      const data = ['name', 'age'].reduce(
-        (obj, key) => (input[key] ? { ...obj, [key]: input[key] } : obj),
-        {}
-      );
+    updateMyInfo: (parent, { input }, context) => updateUserInfo(meId, input),
 
-      return updateUserInfo(meId, data);
-    },
-    addPost: (parent, { input }, context) => {
-      const { title, body } = input;
-      return addPost({ authorId: meId, title, body });
-    },
+    addPost: (parent, { input: { title, body } }, context) =>
+      addPost({ authorId: meId, title, body }),
+
     likePost: (parent, { postId }, context) => {
       const post = findPostByPostId(postId);
 
       if (!post) throw new Error(`Post ${postId} Not Exists`);
 
-      if (!post.likeGiverIds.includes(postId)) {
+      // 如果尚未按過讚
+      if (!post.likeGiverIds.includes(meId)) {
         return updatePost(postId, {
           likeGiverIds: post.likeGiverIds.concat(meId)
         });
       }
 
+      // 如果已經按過讚，就取消
       return updatePost(postId, {
-        likeGiverIds: post.likeGiverIds.filter(id => id === meId)
+        likeGiverIds: post.likeGiverIds.filter(id => id !== meId)
       });
     }
   },
