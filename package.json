@@ -30,6 +30,6 @@
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist",
     "test": "lerna run test",
-    "lint": "eslint ./projects"
+    "lint": "eslint --ignore-path .gitignore ./projects"
   }
 }
