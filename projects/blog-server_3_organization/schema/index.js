@@ -9,14 +9,11 @@ const typeDefs = gql`
     hello: String
   }
 
-  type Mutation {
-    hello: String
-  }
+  type Mutation
 `;
 
 const resolvers = {
-  Query: { hello: () => 'world' },
-  Mutation: { hello: () => 'world' }
+  Query: { hello: () => 'world' }
 };
 
 module.exports = {

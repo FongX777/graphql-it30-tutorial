@@ -34,7 +34,7 @@ module.exports = {
   filterUsersByUserIds: userIds =>
     users.filter(user => userIds.includes(user.id)),
   findUserByUserId,
-  findUserByUserEmail: email => users.find(user => user.email === email),
+  findUserByEmail: email => users.find(user => user.email === email),
 
   updateUserInfo: (userId, data) =>
     Object.assign(findUserByUserId(userId), data),
