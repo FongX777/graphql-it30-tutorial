@@ -34,9 +34,28 @@ The project is split into two folders:
 To run the project, first run these commands:
 
 ```bash
-$ npm install (installs lerna)
-$ lerna bootstrap (connects all the packages)
+$ npm install # installs lerna
+$ lerna bootstrap # connects all the packages
 ```
+
+## Techs
+
+Here's some npm packages I used for developing.
+
+### Server
+
+- apollo-server
+- graphql
+
+### Encryption
+
+- bcrypt
+- jsonwebtoken
+
+### Testing
+
+- [jest](https://jestjs.io/) - testing framework
+- [apollo-server-testing](https://www.apollographql.com/docs/apollo-server/features/testing) - mocking an apollo server for testing
 
 ## References
 
