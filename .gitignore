@@ -1,4 +1,5 @@
 node_modules/
 lerna-debug
 .vscode
-.env
+# should be ignored in production environment
+# .env
