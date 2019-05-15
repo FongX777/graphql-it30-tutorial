@@ -68,7 +68,7 @@ $ npm install --save bcrypt jsonwebtoken
 
 ```
 type Mutation {
-  "註冊。 email 與 passwrod 必填"
+  "註冊。 email 與 password 必填"
   signUp(name: String, email: String!, password: String!): User
 }
 ```
@@ -111,7 +111,7 @@ const resolver = {
       const isUserEmailDuplicate = users.some(user => user.email === email);
       if (isUserEmailDuplicate) throw new Error('User Email Duplicate');
 
-      // 2. 將 passwrod 加密再存進去。非常重要 !!
+      // 2. 將 password 加密再存進去。非常重要 !!
       const hashedPassword = await hash(password, SALT_ROUNDS);
       // 3. 建立新 user
       return addUser({ name, email, password: hashedPassword });

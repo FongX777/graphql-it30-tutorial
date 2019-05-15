@@ -110,7 +110,7 @@ const users = [
   {
     id: 2,
     email: 'kevin@test.com',
-    passwrod: '$2b$04$uy73IdY9HVZrIENuLwZ3k./0azDvlChLyY1ht/73N4YfEZntgChbe', // 123456
+    password: '$2b$04$uy73IdY9HVZrIENuLwZ3k./0azDvlChLyY1ht/73N4YfEZntgChbe', // 123456
     name: 'Kevin',
     age: 40,
     friendIds: [1]

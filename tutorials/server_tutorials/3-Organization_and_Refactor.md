@@ -433,7 +433,7 @@ const typeDefs = gql`
   extend type Mutation {
     updateMyInfo(input: UpdateMyInfoInput!): User
     addFriend(userId: ID!): User
-    "註冊。 email 與 passwrod 必填"
+    "註冊。 email 與 password 必填"
     signUp(name: String, email: String!, password: String!): User
     "登入"
     login(email: String!, password: String!): Token

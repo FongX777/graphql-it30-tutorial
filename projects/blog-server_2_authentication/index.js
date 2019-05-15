@@ -20,7 +20,7 @@ const users = [
   {
     id: 2,
     email: 'kevin@test.com',
-    passwrod: password123456,
+    password: password123456,
     name: 'Kevin',
     age: 40
   },
@@ -73,7 +73,7 @@ const typeDefs = gql`
     updateMyInfo(input: UpdateMyInfoInput!): User
     addPost(input: AddPostInput!): Post
     likePost(postId: ID!): Post
-    "註冊。 email 與 passwrod 必填"
+    "註冊。 email 與 password 必填"
     signUp(name: String, email: String!, password: String!): User
     "登入"
     login(email: String!, password: String!): Token
@@ -214,7 +214,7 @@ const resolvers = {
       const isUserEmailDuplicate = Boolean(findUserByEmail(email));
       if (isUserEmailDuplicate) throw new Error('User Email Duplicate');
 
-      // 2. 將 passwrod 加密再存進去。非常重要 !!
+      // 2. 將 password 加密再存進去。非常重要 !!
       const hashedPassword = await hash(password, SALT_ROUNDS);
       // 3. 建立新 user
       return addUser({ name, email, password: hashedPassword });

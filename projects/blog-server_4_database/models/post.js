@@ -1,3 +1,26 @@
+const post = (sequelize, DataTypes) => {
+  const Post = sequelize.define('post', {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    user: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    title: { type: DataTypes.TEXT, allowNull: false },
+    body: { type: DataTypes.TEXT, defaultValue: '' },
+    created_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+  });
+
+  Post.getAll = async () => {
+    const posts = await Post.findAll();
+    return posts;
+  };
+
+  return Post;
+};
+
+module.exports = post;
+
+//
 const posts = [
   {
     id: 1,

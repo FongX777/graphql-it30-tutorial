@@ -1,3 +1,36 @@
+const user = (sequelize, DataTypes) => {
+  const User = sequelize.define('user', {
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    name: { type: DataTypes.TEXT },
+    email: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+      validate: { isEmail: true }
+    },
+    password: { type: DataTypes.TEXT, allowNull: false },
+    age: { type: DataTypes.INTEGER, validate: { min: 1 } }
+  });
+
+  User.findByLogin = async login => {
+    let user = await User.findOne({
+      where: { name: login }
+    });
+
+    if (!user) {
+      user = await User.findOne({
+        where: { email: login }
+      });
+    }
+
+    return user;
+  };
+
+  return User;
+};
+
+module.exports = user;
+
 // mock Data
 const password123456 =
   '$2b$04$wcwaquqi5ea1Ho0aKwkZ0e51/RUkg6SGxaumo8fxzILDmcrv4OBIO';
@@ -12,7 +45,7 @@ const users = [
   {
     id: 2,
     email: 'kevin@test.com',
-    passwrod: password123456,
+    password: password123456,
     name: 'Kevin',
     age: 40
   },
