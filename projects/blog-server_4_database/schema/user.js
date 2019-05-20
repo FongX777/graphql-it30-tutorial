@@ -61,11 +61,11 @@ const isAuthenticated = resolverFunc => (parent, args, context) => {
 const resolvers = {
   Query: {
     me: isAuthenticated((root, args, { me, dataSources }) =>
-      dataSources.userModel.findUserByUserId(me.id)
+      dataSources.userModel.getOneById(me.id)
     ),
-    users: (_, __, { dataSources }) => dataSources.userModel.getAllUsers(),
+    users: (_, __, { dataSources }) => dataSources.userModel.getAll(),
     user: (root, { id }, { dataSources }) =>
-      dataSources.userModel.findUserByUserId(id)
+      dataSources.userModel.getOneById(id)
   },
   Mutation: {
     updateMyInfo: isAuthenticated((parent, { input }, { me, dataSources }) => {
@@ -75,7 +75,7 @@ const resolvers = {
         {}
       );
 
-      return dataSources.userModel.updateUserInfo(me.id, data);
+      return dataSources.userModel.updateOne(me.id, data);
     }),
     signUp: async (
       root,
@@ -83,19 +83,19 @@ const resolvers = {
       { saltRounds, dataSources }
     ) => {
       const isUserEmailDuplicate = Boolean(
-        dataSources.userModel.findUserByEmail(email)
+        await dataSources.userModel.getOneByEmail(email)
       );
       if (isUserEmailDuplicate) throw new Error('User Email Duplicate');
 
       const hashedPassword = await hash(password, saltRounds);
-      return dataSources.userModel.addUser({
+      return dataSources.userModel.createOne({
         name,
         email,
         password: hashedPassword
       });
     },
     login: async (root, { email, password }, { secret, dataSources }) => {
-      const user = dataSources.userModel.findUserByEmail(email);
+      const user = await dataSources.userModel.getOneByEmail(email);
       if (!user) throw new Error('Email Account Not Exists');
 
       const passwordIsValid = await bcrypt.compare(password, user.password);
@@ -105,8 +105,8 @@ const resolvers = {
     }
   },
   User: {
-    posts: (parent, args, { dataSources }) =>
-      dataSources.postModel.filterPostsByUserId(parent.id)
+    posts: async (parent, args, { dataSources }) =>
+      dataSources.postModel.getAllByAuthorId(parent.id)
   }
 };
 

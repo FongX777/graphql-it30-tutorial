@@ -8,9 +8,34 @@ module.exports = (database, username, password) => {
     // - default ':memory:'
     // storage: 'path/to/database.sqlite'
   });
+
+  const userModel = sequelize.import('./user');
+  const postModel = sequelize.import('./post');
+
+  // a post must belong to a user
+  postModel.belongsTo(
+    userModel, // target model
+    {
+      as: 'author', // post.getAuthor()
+      foreignKey: 'authorId' // source table's
+    }
+  );
+  // one user can have more than one psot
+  userModel.hasMany(postModel, {
+    as: 'posts', // user.getPosts()
+    sourceKey: 'id',
+    foreignKey: 'id' // where post.id = ?
+  });
+
+  const UserPostLike = sequelize.define('user_post_like', {});
+  postModel.belongsToMany(userModel, {
+    through: UserPostLike,
+    as: 'likeGivers'
+  });
+
   return {
-    userModel: sequelize.import('./user'),
-    postModel: sequelize.import('./post'),
+    userModel,
+    postModel,
     sequelize
   };
 };

@@ -79,8 +79,8 @@ const server = new ApolloServer({
 
 // 4. Activate Server
 if (process.env.NODE_ENV !== 'test') {
-  sequelize.sync().then(() => {
-    seedDb();
+  sequelize.sync().then(async () => {
+    await seedDb();
     server.listen().then(({ url }) => {
       console.log(`🚀 Server ready at ${url}`);
     });
@@ -89,16 +89,38 @@ if (process.env.NODE_ENV !== 'test') {
 
 const seedDb = async () => {
   // bulkCreate api: https://sequelize.readthedocs.io/en/v3/docs/instances/#working-in-bulk-creating-updating-and-destroying-multiple-rows-at-once
-  userModel
+  await userModel
     .bulkCreate(users, {
       validate: true
     })
-    .then(() => console.log('Users inserted'));
-  postModel
+    .then(insertedUsers => {
+      console.info(`${insertedUsers.length} Users Inserted`);
+    })
+    .catch(error => {
+      console.error(`User Insertion Error: ${error.messege}`);
+      throw error;
+    });
+
+  await postModel
     .bulkCreate(posts, {
       validate: true
     })
-    .then(() => console.log('Posts inserted'));
+    .then(async insertedPosts => {
+      // handle user_post_like_relation
+      await Promise.all(
+        posts.map((post, index) => {
+          const insertedPost = insertedPosts[index];
+          if (post.likeGiverIds && Array.isArray(post.likeGiverIds)) {
+            return insertedPost.addLikeGivers(post.likeGiverIds);
+          }
+        })
+      );
+      console.log(`${insertedPosts.length} Posts Inserted`);
+    })
+    .catch(error => {
+      console.error(`Post Insertion Error: ${error.messege}`);
+      throw error;
+    });
 };
 
 module.exports = {
