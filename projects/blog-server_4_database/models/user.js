@@ -20,7 +20,7 @@ const user = (sequelize, DataTypes) => {
     updateOne: (id, data) =>
       User.update(data, { where: { id } }).then(updatedIds =>
         User.findByPk(updatedIds[0])
-      ), // updateUserInfo: (userId, data) => {},
+      ),
     createOne: ({ name, email, password }) =>
       User.create({ name, email, password }).then(user => {
         console.log(user);
