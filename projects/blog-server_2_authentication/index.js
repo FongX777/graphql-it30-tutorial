@@ -208,9 +208,10 @@ const postModel = (posts => {
   };
 })(posts);
 
-const hash = text => bcrypt.hash(text, SALT_ROUNDS);
-const createToken = ({ id, email, name }) =>
-  jwt.sign({ id, email, name }, SECRET, {
+const hash = (text, saltRounds) => bcrypt.hash(text, saltRounds);
+
+const createToken = ({ id, email, name }, secret) =>
+  jwt.sign({ id, email, name }, secret, {
     expiresIn: '1d'
   });
 
@@ -253,13 +254,11 @@ const resolvers = {
     signUp: async (root, { name, email, password }, context) => {
       // 1. 檢查不能有重複註冊 email
       const isUserEmailDuplicate = Boolean(userModel.getOneByEmail(email));
-      console.log('duplicate', isUserEmailDuplicate);
       if (isUserEmailDuplicate) throw new Error('User Email Duplicate');
 
       // 2. 將 password 加密再存進去。非常重要 !!
       const hashedPassword = await hash(password, SALT_ROUNDS);
       // 3. 建立新 user
-      console.log('data', name, email, hashedPassword);
       return userModel.createOne({ name, email, password: hashedPassword });
     },
     login: async (root, { email, password }, context) => {
@@ -272,7 +271,7 @@ const resolvers = {
       if (!passwordIsValid) throw new Error('Wrong Password');
 
       // 3. 成功則回傳 token
-      return { token: await createToken(user) };
+      return { token: await createToken(user, SECRET) };
     }
   },
   User: {
