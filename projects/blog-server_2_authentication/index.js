@@ -129,42 +129,86 @@ const typeDefs = gql`
 `;
 
 // helper functions
-const getAllUsers = () => users;
-const filterUsersByUserIds = userIds =>
-  users.filter(user => userIds.includes(user.id));
-const findUserByUserId = userId =>
-  users.find(user => user.id === Number(userId));
-const findUserByEmail = email => users.find(user => user.email === email);
+const userModel = (users => {
+  let lastInsertedId = 3;
+  const getOneById = id => {
+    const user = users.find(user => user.id === Number(id));
+    if (!user) throw new Error('User Not Found.');
+    return user;
+  };
+  return {
+    getOneById,
+    getOneByEmail: email => users.find(user => user.email === email),
+    getAll: () => users,
+    getAllByIds: userIds => users.filter(user => userIds.includes(user.id)),
+    updateOne: (id, { name, age }) => {
+      const user = getOneById(id);
+      return Object.assign(user, {
+        name: name || user.name,
+        age: age || user.age
+      });
+    },
+    createOne: ({ name, email, password }) => {
+      lastInsertedId += 1;
+      const user = { id: lastInsertedId, name, email, password };
+      users.push(user);
+      return user;
+    }
+  };
+})(users);
 
-const getAllPosts = () => posts;
-const findPostByPostId = postId =>
-  posts.find(post => post.id === Number(postId));
-const filterPostsByUserId = userId =>
-  posts.filter(post => post.authorId === Number(userId));
-
-const updateUserInfo = (userId, data) =>
-  Object.assign(findUserByUserId(userId), data);
-const addPost = ({ authorId, title, body }) =>
-  (posts[posts.length] = {
-    id: posts.length + 1,
-    authorId: Number(authorId),
-    title,
-    body,
-    likeGiverIds: [],
-    createdAt: new Date().toISOString()
-  });
-
-const updatePost = (postId, data) =>
-  Object.assign(findPostByPostId(Number(postId)), data);
+const postModel = (posts => {
+  let lastInsertedId = 2;
+  const getOneById = id => {
+    const post = posts.find(post => post.id === Number(id));
+    if (!post) throw new Error('Post Not Found.');
+    return post;
+  };
+  return {
+    getOneById,
+    getAll: () => posts,
+    getAllByAuthorId: authorId =>
+      posts.filter(post => post.authorId === Number(authorId)),
+    createOne: ({ authorId, title, body }) => {
+      lastInsertedId += 1;
+      const post = {
+        id: lastInsertedId,
+        authorId,
+        title,
+        body,
+        likeGiverIds: [],
+        createdAt: new Date().toISOString()
+      };
+      posts.push(post);
+      return post;
+    },
+    updateOne: (id, { title, body }) => {
+      const post = getOneById(id);
+      return Object.assign(post, {
+        title: title || post.title,
+        body: body || post.body
+      });
+    },
+    addOneLikeGiver: (postId, userId) => {
+      const post = getOneById(postId);
+      if (post.likeGiverIds.includes(userId)) {
+        return post;
+      }
+      post.likeGiverIds.push(userId);
+      return post;
+    },
+    removeOneLikeGiver: (postId, userId) => {
+      const post = getOneById(postId);
+      if (post.likeGiverIds.includes(userId)) {
+        post.likeGiverIds = post.likeGiverIds.filter(id => id !== userId);
+        return post;
+      }
+      return post;
+    }
+  };
+})(posts);
 
 const hash = text => bcrypt.hash(text, SALT_ROUNDS);
-const addUser = ({ name, email, password }) =>
-  (users[users.length] = {
-    id: users.length + 1,
-    name,
-    email,
-    password
-  });
 const createToken = ({ id, email, name }) =>
   jwt.sign({ id, email, name }, SECRET, {
     expiresIn: '1d'
@@ -179,49 +223,46 @@ const isAuthenticated = resolverFunc => (parent, args, context) => {
 const resolvers = {
   Query: {
     hello: () => 'world',
-    me: isAuthenticated((root, args, { me }) => findUserByUserId(me.id)),
-    users: () => getAllUsers(),
-    user: (root, { id }, context) => findUserByUserId(id),
-    posts: () => getAllPosts(),
-    post: (root, { id }, context) => findPostByPostId(id)
+    me: isAuthenticated((root, args, { me }) => userModel.getOneById(me.id)),
+    users: () => userModel.getAll(),
+    user: (root, { id }, context) => userModel.getOneById(id),
+    posts: () => postModel.getAll(),
+    post: (root, { id }, context) => postModel.getOneById(id)
   },
   Mutation: {
     updateMyInfo: isAuthenticated((parent, { input }, { me }) =>
-      updateUserInfo(me.id, input)
+      userModel.updateOne(me.id, input)
     ),
-    addPost: isAuthenticated((parent, { input: { title, body } }, { me }) =>
-      addPost({ authorId: me.id, title, body })
-    ),
-    likePost: isAuthenticated((parent, { postId }, { me }) => {
-      const post = findPostByPostId(postId);
 
+    addPost: isAuthenticated((parent, { input: { title, body } }, { me }) =>
+      postModel.createOne({ authorId: me.id, title, body })
+    ),
+
+    likePost: isAuthenticated((parent, { postId }, { me }) => {
+      const post = postModel.getOneById(postId);
       if (!post) throw new Error(`Post ${postId} Not Exists`);
 
       // 如果尚未按過讚
       if (!post.likeGiverIds.includes(me.id)) {
-        return updatePost(postId, {
-          likeGiverIds: post.likeGiverIds.concat(me.id)
-        });
+        return postModel.addOneLikeGiver(postId, me.id);
       }
 
       // 如果已經按過讚，就取消
-      return updatePost(postId, {
-        likeGiverIds: post.likeGiverIds.filter(id => id !== me.id)
-      });
+      return postModel.removeOneLikeGiver(postId, me.id);
     }),
     signUp: async (root, { name, email, password }, context) => {
       // 1. 檢查不能有重複註冊 email
-      const isUserEmailDuplicate = Boolean(findUserByEmail(email));
+      const isUserEmailDuplicate = Boolean(userModel.getOneByEmail(email));
       if (isUserEmailDuplicate) throw new Error('User Email Duplicate');
 
       // 2. 將 password 加密再存進去。非常重要 !!
       const hashedPassword = await hash(password, SALT_ROUNDS);
       // 3. 建立新 user
-      return addUser({ name, email, password: hashedPassword });
+      return userModel.updateOne({ name, email, password: hashedPassword });
     },
     login: async (root, { email, password }, context) => {
       // 1. 透過 email 找到相對應的 user
-      const user = findUserByEmail(email);
+      const user = userModel.getOneByEmail(email);
       if (!user) throw new Error('Email Account Not Exists');
 
       // 2. 將傳進來的 password 與資料庫存的 user.password 做比對
@@ -233,12 +274,12 @@ const resolvers = {
     }
   },
   User: {
-    posts: (parent, args, context) => filterPostsByUserId(parent.id)
+    posts: (parent, args, context) => postModel.getAllByAuthorId(parent.id)
   },
   Post: {
-    author: (parent, args, context) => findUserByUserId(parent.authorId),
+    author: (parent, args, context) => userModel.getOneById(parent.authorId),
     likeGivers: (parent, args, context) =>
-      filterUsersByUserIds(parent.likeGiverIds)
+      userModel.getAllByIds(parent.likeGiverIds)
   }
 };
 
