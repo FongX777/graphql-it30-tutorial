@@ -253,12 +253,14 @@ const resolvers = {
     signUp: async (root, { name, email, password }, context) => {
       // 1. 檢查不能有重複註冊 email
       const isUserEmailDuplicate = Boolean(userModel.getOneByEmail(email));
+      console.log('duplicate', isUserEmailDuplicate);
       if (isUserEmailDuplicate) throw new Error('User Email Duplicate');
 
       // 2. 將 password 加密再存進去。非常重要 !!
       const hashedPassword = await hash(password, SALT_ROUNDS);
       // 3. 建立新 user
-      return userModel.updateOne({ name, email, password: hashedPassword });
+      console.log('data', name, email, hashedPassword);
+      return userModel.createOne({ name, email, password: hashedPassword });
     },
     login: async (root, { email, password }, context) => {
       // 1. 透過 email 找到相對應的 user
