@@ -13,10 +13,10 @@ const user = (sequelize, DataTypes) => {
   });
 
   const methods = {
-    getOneById: id => User.findByPk(id), // findUserByUserId: () => {},
-    getAll: () => User.findAll(), // getAllUsers: () => {},
-    getAllByIds: ids => User.findAll({ where: { id: ids } }), // filterUsersByUserIds: userIds => {},
-    getOneByEmail: email => User.findOne({ where: { email } }), // findUserByEmail: email => {},
+    getOneById: id => User.findByPk(id),
+    getAll: () => User.findAll(),
+    getAllByIds: ids => User.findAll({ where: { id: ids } }),
+    getOneByEmail: email => User.findOne({ where: { email } }),
     updateOne: (id, data) =>
       User.update(data, { where: { id } }).then(updatedIds =>
         User.findByPk(updatedIds[0])
