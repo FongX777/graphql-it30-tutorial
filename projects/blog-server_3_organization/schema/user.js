@@ -61,22 +61,16 @@ const isAuthenticated = resolverFunc => (parent, args, context) => {
 const resolvers = {
   Query: {
     me: isAuthenticated((root, args, { me, dataSources }) =>
-      dataSources.userModel.findUserByUserId(me.id)
+      dataSources.userModel.getOneById(me.id)
     ),
-    users: (_, __, { dataSources }) => dataSources.userModel.getAllUsers(),
+    users: (_, __, { dataSources }) => dataSources.userModel.getAll(),
     user: (root, { id }, { dataSources }) =>
-      dataSources.userModel.findUserByUserId(id)
+      dataSources.userModel.getOneById(id)
   },
   Mutation: {
-    updateMyInfo: isAuthenticated((parent, { input }, { me, dataSources }) => {
-      // 過濾空值
-      const data = ['name', 'age'].reduce(
-        (obj, key) => (input[key] ? { ...obj, [key]: input[key] } : obj),
-        {}
-      );
-
-      return dataSources.userModel.updateUserInfo(me.id, data);
-    }),
+    updateMyInfo: isAuthenticated((parent, { input }, { me, dataSources }) =>
+      dataSources.userModel.updateOne(me.id, input)
+    ),
     signUp: async (
       root,
       { name, email, password },
@@ -88,7 +82,7 @@ const resolvers = {
       if (isUserEmailDuplicate) throw new Error('User Email Duplicate');
 
       const hashedPassword = await hash(password, saltRounds);
-      return dataSources.userModel.addUser({
+      return dataSources.userModel.createOne({
         name,
         email,
         password: hashedPassword
