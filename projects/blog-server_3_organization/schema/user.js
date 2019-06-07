@@ -77,7 +77,7 @@ const resolvers = {
       { saltRounds, dataSources }
     ) => {
       const isUserEmailDuplicate = Boolean(
-        dataSources.userModel.findUserByEmail(email)
+        dataSources.userModel.getOneByEmail(email)
       );
       if (isUserEmailDuplicate) throw new Error('User Email Duplicate');
 
@@ -89,7 +89,7 @@ const resolvers = {
       });
     },
     login: async (root, { email, password }, { secret, dataSources }) => {
-      const user = dataSources.userModel.findUserByEmail(email);
+      const user = dataSources.userModel.getOneByEmail(email);
       if (!user) throw new Error('Email Account Not Exists');
 
       const passwordIsValid = await bcrypt.compare(password, user.password);
@@ -100,7 +100,7 @@ const resolvers = {
   },
   User: {
     posts: (parent, args, { dataSources }) =>
-      dataSources.postModel.filterPostsByUserId(parent.id)
+      dataSources.postModel.getAllByAuthorId(parent.id)
   }
 };
 

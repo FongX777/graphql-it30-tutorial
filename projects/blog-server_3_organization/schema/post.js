@@ -70,7 +70,7 @@ const resolvers = {
     author: (parent, args, { dataSources }) =>
       dataSources.userModel.getOneById(parent.authorId),
     likeGivers: (parent, args, { dataSources }) =>
-      dataSources.userModel.getAllbyIds(parent.likeGiverIds)
+      dataSources.userModel.getAllByIds(parent.likeGiverIds)
   }
 };
 
