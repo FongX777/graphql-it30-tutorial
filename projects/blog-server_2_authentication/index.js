@@ -7,33 +7,33 @@ const SALT_ROUNDS = 2;
 const SECRET = 'just_a_random_secret';
 
 // mock Data
-const password123456 =
+const PASSWORD_123456 =
   '$2b$04$wcwaquqi5ea1Ho0aKwkZ0e51/RUkg6SGxaumo8fxzILDmcrv4OBIO';
-const users = [
+const USERS = [
   {
     id: 1,
     email: 'fong@test.com',
-    password: password123456,
+    password: PASSWORD_123456,
     name: 'Fong',
     age: 23
   },
   {
     id: 2,
     email: 'kevin@test.com',
-    password: password123456,
+    password: PASSWORD_123456,
     name: 'Kevin',
     age: 40
   },
   {
     id: 3,
     email: 'mary@test.com',
-    password: password123456,
+    password: PASSWORD_123456,
     name: 'Mary',
     age: 18
   }
 ];
 
-const posts = [
+const POSTS = [
   {
     id: 1,
     authorId: 1,
@@ -155,7 +155,7 @@ const userModel = (users => {
       return user;
     }
   };
-})(users);
+})(USERS);
 
 const postModel = (posts => {
   let lastInsertedId = 2;
@@ -206,7 +206,7 @@ const postModel = (posts => {
       return post;
     }
   };
-})(posts);
+})(POSTS);
 
 const hash = (text, saltRounds) => bcrypt.hash(text, saltRounds);
 

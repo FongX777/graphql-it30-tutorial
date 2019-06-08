@@ -12,33 +12,33 @@ const jwt = require('jsonwebtoken');
 const SALT_ROUNDS = Number(process.env.SALT_ROUNDS);
 const SECRET = process.env.SECRET;
 
-const password123456 =
+const PASSWORD_123456 =
   '$2b$04$wcwaquqi5ea1Ho0aKwkZ0e51/RUkg6SGxaumo8fxzILDmcrv4OBIO';
-const users = [
+const USERS = [
   {
     id: 1,
     email: 'fong@test.com',
-    password: password123456,
+    password: PASSWORD_123456,
     name: 'Fong',
     age: 23
   },
   {
     id: 2,
     email: 'kevin@test.com',
-    password: password123456,
+    password: PASSWORD_123456,
     name: 'Kevin',
     age: 40
   },
   {
     id: 3,
     email: 'mary@test.com',
-    password: password123456,
+    password: PASSWORD_123456,
     name: 'Mary',
     age: 18
   }
 ];
 
-const posts = [
+const POSTS = [
   {
     id: 1,
     authorId: 1,
@@ -90,7 +90,7 @@ if (process.env.NODE_ENV !== 'test') {
 const seedDb = async () => {
   // bulkCreate api: https://sequelize.readthedocs.io/en/v3/docs/instances/#working-in-bulk-creating-updating-and-destroying-multiple-rows-at-once
   await userModel
-    .bulkCreate(users, {
+    .bulkCreate(USERS, {
       validate: true
     })
     .then(insertedUsers => {
@@ -102,13 +102,13 @@ const seedDb = async () => {
     });
 
   await postModel
-    .bulkCreate(posts, {
+    .bulkCreate(POSTS, {
       validate: true
     })
     .then(async insertedPosts => {
       // handle user_post_like_relation
       await Promise.all(
-        posts.map((post, index) => {
+        POSTS.map((post, index) => {
           const insertedPost = insertedPosts[index];
           if (post.likeGiverIds && Array.isArray(post.likeGiverIds)) {
             return insertedPost.addLikeGivers(post.likeGiverIds);

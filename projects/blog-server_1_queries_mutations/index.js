@@ -1,34 +1,34 @@
 const { ApolloServer, gql } = require('apollo-server');
 
 // mock Data
-const meId = 1;
-const password123456 =
+const ME_ID = 1;
+const PASSWORD_123456 =
   '$2b$04$wcwaquqi5ea1Ho0aKwkZ0e51/RUkg6SGxaumo8fxzILDmcrv4OBIO';
-const users = [
+const USERS = [
   {
     id: 1,
     email: 'fong@test.com',
-    password: password123456,
+    password: PASSWORD_123456,
     name: 'Fong',
     age: 23
   },
   {
     id: 2,
     email: 'kevin@test.com',
-    password: password123456,
+    password: PASSWORD_123456,
     name: 'Kevin',
     age: 40
   },
   {
     id: 3,
     email: 'mary@test.com',
-    password: password123456,
+    password: PASSWORD_123456,
     name: 'Mary',
     age: 18
   }
 ];
 
-const posts = [
+const POSTS = [
   {
     id: 1,
     authorId: 1,
@@ -134,7 +134,7 @@ const userModel = (users => {
       });
     }
   };
-})(users);
+})(USERS);
 
 const postModel = (posts => {
   let lastInsertedId = 2;
@@ -185,14 +185,14 @@ const postModel = (posts => {
       return post;
     }
   };
-})(posts);
+})(POSTS);
 
 // 2. Resolvers 是一個會對照 Schema 中 field 的 function map ，讓你可以計算並回傳資料給 GraphQL Server
 // A resolver is a function that resolves a value for a type or field in a schema.
 const resolvers = {
   Query: {
     hello: () => 'world',
-    me: () => userModel.getOneById(meId),
+    me: () => userModel.getOneById(ME_ID),
     users: () => userModel.getAll(),
     user: (root, { id }, context) => userModel.getOneById(id),
     posts: () => postModel.getAll(),
@@ -200,22 +200,22 @@ const resolvers = {
   },
   Mutation: {
     updateMyInfo: (parent, { input }, context) =>
-      userModel.updateOne(meId, input),
+      userModel.updateOne(ME_ID, input),
 
     addPost: (parent, { input: { title, body } }, context) =>
-      postModel.createOne({ authorId: meId, title, body }),
+      postModel.createOne({ authorId: ME_ID, title, body }),
 
     likePost: (parent, { postId }, context) => {
       const post = postModel.getOneById(postId);
       if (!post) throw new Error(`Post ${postId} Not Exists`);
 
       // 如果尚未按過讚
-      if (!post.likeGiverIds.includes(meId)) {
-        return postModel.addOneLikeGiver(postId, meId);
+      if (!post.likeGiverIds.includes(ME_ID)) {
+        return postModel.addOneLikeGiver(postId, ME_ID);
       }
 
       // 如果已經按過讚，就取消
-      return postModel.removeOneLikeGiver(postId, meId);
+      return postModel.removeOneLikeGiver(postId, ME_ID);
     }
   },
   User: {
