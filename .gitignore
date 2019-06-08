@@ -3,5 +3,6 @@ coverage/
 .env
 lerna-debug
 .vscode
+*.sqlite
 # should be ignored in production environment
 # .env
