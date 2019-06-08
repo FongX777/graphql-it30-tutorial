@@ -18,9 +18,16 @@ const user = (sequelize, DataTypes) => {
     getAllByIds: ids => User.findAll({ where: { id: ids } }),
     getOneByEmail: email => User.findOne({ where: { email } }),
     updateOne: (id, data) =>
-      User.update(data, { where: { id } }).then(updatedIds =>
-        User.findByPk(updatedIds[0])
-      ),
+      User.findOne({ where: { id } }).then(async user => {
+        if (!user) {
+          throw new Error('Not found');
+        }
+        await user.update({
+          name: data.name || user.dataValues.name,
+          age: data.age || user.dataValues.age
+        });
+        return User.findByPk(id);
+      }),
     createOne: ({ name, email, password }) =>
       User.create({ name, email, password }).then(user => {
         console.log(user);
