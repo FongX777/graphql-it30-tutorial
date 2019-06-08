@@ -5,7 +5,6 @@ module.exports = (database, username, password, storagePath) => {
   const sequelize = new Sequelize(database, username, password, {
     dialect: 'sqlite',
     // the storage engine for sqlite
-    // - default ':memory:'
     storage: storagePath
   });
 

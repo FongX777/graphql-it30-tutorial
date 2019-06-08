@@ -1,10 +1,10 @@
-require('dotenv').config();
+require('dotenv').config({ path: process.env.ENV_PATH });
 
 const { userModel, postModel, sequelize } = require('./models')(
   process.env.DATABASE_NAME,
   process.env.DATABASE_USER,
   process.env.DATABASE_PASSWORD,
-  process.env.DEV_DATABASE_STORAGE_PATH || process.env.DATABASE_STORAGE_PATH
+  process.env.DATABASE_STORAGE_PATH
 );
 sequelize.sync().then(async () => {
   await seedDb();
