@@ -117,17 +117,14 @@ const typeDefs = gql`
 
 // helper functions
 const userModel = (users => {
-  const getOneById = id => {
-    const user = users.find(user => user.id === Number(id));
-    if (!user) throw new Error('User Not Found.');
-    return user;
-  };
+  const getOneById = id => users.find(user => user.id === Number(id));
   return {
     getOneById,
     getAll: () => users,
     getAllByIds: userIds => users.filter(user => userIds.includes(user.id)),
     updateOne: (id, { name, age }) => {
       const user = getOneById(id);
+      if (!user) throw new Error('User Not Found.');
       return Object.assign(user, {
         name: name || user.name,
         age: age || user.age
@@ -138,11 +135,7 @@ const userModel = (users => {
 
 const postModel = (posts => {
   let lastInsertedId = 2;
-  const getOneById = id => {
-    const post = posts.find(post => post.id === Number(id));
-    if (!post) throw new Error('Post Not Found.');
-    return post;
-  };
+  const getOneById = id => posts.find(post => post.id === Number(id));
   return {
     getOneById,
     getAll: () => posts,
@@ -163,6 +156,7 @@ const postModel = (posts => {
     },
     updateOne: (id, { title, body }) => {
       const post = getOneById(id);
+      if (!post) throw new Error('Post Not Found.');
       return Object.assign(post, {
         title: title || post.title,
         body: body || post.body
@@ -170,6 +164,7 @@ const postModel = (posts => {
     },
     addOneLikeGiver: (postId, userId) => {
       const post = getOneById(postId);
+      if (!post) throw new Error('Post Not Found.');
       if (post.likeGiverIds.includes(userId)) {
         return post;
       }
@@ -178,6 +173,7 @@ const postModel = (posts => {
     },
     removeOneLikeGiver: (postId, userId) => {
       const post = getOneById(postId);
+      if (!post) throw new Error('Post Not Found.');
       if (post.likeGiverIds.includes(userId)) {
         post.likeGiverIds = post.likeGiverIds.filter(id => id !== userId);
         return post;
