@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "NODE_EV=dev ENV_PATH=.env.dev nodemon --exec 'rm -f test.sqlite && node seed.js && node index.js'",
+    "dev": "ENV_PATH=.env.dev nodemon --exec 'rm -f test.sqlite && node seed.js && node index.js'",
     "test": "NODE_ENV=test jest",
     "db:seed": "node seed.js",
-    "db:reset": "rm ./*.sqlite && node seed.js",
-    "db:clear": "rm ./*.sqlite"
+    "db:reset": "rm -f ./*.sqlite && node seed.js",
+    "db:clear": "rm -f ./*.sqlite"
   },
   "author": "",
   "license": "ISC",
