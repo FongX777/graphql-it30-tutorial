@@ -7,22 +7,26 @@ const post = (sequelize, DataTypes) => {
     created_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
   });
 
+  const toDataValues = result => result.dataValues;
+
   const methods = {
-    getOneById: id => Post.findByPk(id), // findPostByPostId: postId => {},
-    getAll: () => Post.findAll(), // getAllPosts: () => {},
+    getOneById: id => Post.findByPk(id).then(toDataValues),
+    getAll: () => Post.findAll(),
     getAllByAuthorId: authorId =>
-      Post.findAll({ where: { authorId: authorId } }), // filterPostsByUserId: userId => {},
+      Post.findAll({ where: { authorId: authorId } }),
     createOne: ({ authorId, title, body }) =>
-      Post.create({ title, body, authorId }).then(post => post.dataValues), // addPost
-    updateOne: (id, data) => Post.update(data, { where: { id } }), // updatePost: (postId, data) => {}
+      Post.create({ title, body, authorId }).then(post => post.dataValues),
+    updateOne: (id, data) => Post.update(data, { where: { id } }),
     addOneLikeGiver: (postId, userId) =>
       Post.findByPk(postId)
         .then(post => post.addLikeGivers([userId]))
-        .then(() => Post.findByPk(postId)),
+        .then(() => Post.findByPk(postId))
+        .then(toDataValues),
     removeOneLikeGiver: (postId, userId) =>
       Post.findByPk(postId)
         .then(post => post.removeLikeGivers([userId]))
-        .then(() => Post.findByPk(postId)),
+        .then(() => Post.findByPk(postId))
+        .then(toDataValues),
     getLikeGivers: id =>
       Post.findByPk(id).then(async post => post.getLikeGivers())
   };
