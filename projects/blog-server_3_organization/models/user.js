@@ -1,10 +1,6 @@
 module.exports = users => {
   let lastInsertedId = 3;
-  const getOneById = id => {
-    const user = users.find(user => user.id === Number(id));
-    if (!user) throw new Error('User Not Found.');
-    return user;
-  };
+  const getOneById = id => users.find(user => user.id === Number(id));
   return {
     getOneById,
     getOneByEmail: email => users.find(user => user.email === email),
@@ -12,6 +8,7 @@ module.exports = users => {
     getAllByIds: userIds => users.filter(user => userIds.includes(user.id)),
     updateOne: (id, { name, age }) => {
       const user = getOneById(id);
+      if (!user) throw new Error('User Not Found.');
       return Object.assign(user, {
         name: name || user.name,
         age: age || user.age
