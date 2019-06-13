@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "NODE_ENV=test jest"
+    "dev": "ENV_PATH=.env.dev nodemon --exec 'rm -f test.sqlite && node seed.js && node index.js'",
+    "test": "NODE_ENV=test jest",
+    "db:seed": "node seed.js",
+    "db:reset": "rm -f ./*.sqlite && node seed.js",
+    "db:clear": "rm -f ./*.sqlite"
   },
   "author": "",
   "license": "ISC",
@@ -16,7 +19,7 @@
     "graphql": "^14.2.0",
     "jsonwebtoken": "^8.5.1",
     "sequelize": "^5.8.0",
-    "sequelize-cli": "^5.4.0",
+    "sequelize-cli": "^5.5.0",
     "sqlite3": "^4.0.6"
   },
   "devDependencies": {

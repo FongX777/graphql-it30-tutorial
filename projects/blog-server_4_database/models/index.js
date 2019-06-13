@@ -1,12 +1,11 @@
 const Sequelize = require('sequelize');
 
-module.exports = (database, username, password) => {
+module.exports = (database, username, password, storagePath) => {
   // Sequelize constructor api: http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor
   const sequelize = new Sequelize(database, username, password, {
-    dialect: 'sqlite'
+    dialect: 'sqlite',
     // the storage engine for sqlite
-    // - default ':memory:'
-    // storage: 'path/to/database.sqlite'
+    storage: storagePath
   });
 
   const userModel = sequelize.import('./user');

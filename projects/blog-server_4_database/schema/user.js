@@ -68,15 +68,18 @@ const resolvers = {
       dataSources.userModel.getOneById(id)
   },
   Mutation: {
-    updateMyInfo: isAuthenticated((parent, { input }, { me, dataSources }) => {
-      // 過濾空值
-      const data = ['name', 'age'].reduce(
-        (obj, key) => (input[key] ? { ...obj, [key]: input[key] } : obj),
-        {}
-      );
+    updateMyInfo: isAuthenticated(
+      async (parent, { input }, { me, dataSources }) => {
+        // 過濾空值
+        const data = ['name', 'age'].reduce(
+          (obj, key) => (input[key] ? { ...obj, [key]: input[key] } : obj),
+          {}
+        );
 
-      return dataSources.userModel.updateOne(me.id, data);
-    }),
+        const user = await dataSources.userModel.updateOne(me.id, data);
+        return user;
+      }
+    ),
     signUp: async (
       root,
       { name, email, password },

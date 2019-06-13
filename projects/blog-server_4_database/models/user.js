@@ -13,14 +13,21 @@ const user = (sequelize, DataTypes) => {
   });
 
   const methods = {
-    getOneById: id => User.findByPk(id), // findUserByUserId: () => {},
-    getAll: () => User.findAll(), // getAllUsers: () => {},
-    getAllByIds: ids => User.findAll({ where: { id: ids } }), // filterUsersByUserIds: userIds => {},
-    getOneByEmail: email => User.findOne({ where: { email } }), // findUserByEmail: email => {},
+    getOneById: id => User.findByPk(id),
+    getAll: () => User.findAll(),
+    getAllByIds: ids => User.findAll({ where: { id: ids } }),
+    getOneByEmail: email => User.findOne({ where: { email } }),
     updateOne: (id, data) =>
-      User.update(data, { where: { id } }).then(updatedIds =>
-        User.findByPk(updatedIds[0])
-      ), // updateUserInfo: (userId, data) => {},
+      User.findOne({ where: { id } }).then(async user => {
+        if (!user) {
+          throw new Error('Not found');
+        }
+        await user.update({
+          name: data.name || user.dataValues.name,
+          age: data.age || user.dataValues.age
+        });
+        return User.findByPk(id);
+      }),
     createOne: ({ name, email, password }) =>
       User.create({ name, email, password }).then(user => {
         console.log(user);

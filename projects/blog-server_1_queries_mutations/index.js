@@ -1,34 +1,34 @@
 const { ApolloServer, gql } = require('apollo-server');
 
 // mock Data
-const meId = 1;
-const password123456 =
+const ME_ID = 1;
+const PASSWORD_123456 =
   '$2b$04$wcwaquqi5ea1Ho0aKwkZ0e51/RUkg6SGxaumo8fxzILDmcrv4OBIO';
-const users = [
+const USERS = [
   {
     id: 1,
     email: 'fong@test.com',
-    password: password123456,
+    password: PASSWORD_123456,
     name: 'Fong',
     age: 23
   },
   {
     id: 2,
     email: 'kevin@test.com',
-    password: password123456,
+    password: PASSWORD_123456,
     name: 'Kevin',
     age: 40
   },
   {
     id: 3,
     email: 'mary@test.com',
-    password: password123456,
+    password: PASSWORD_123456,
     name: 'Mary',
     age: 18
   }
 ];
 
-const posts = [
+const POSTS = [
   {
     id: 1,
     authorId: 1,
@@ -116,75 +116,111 @@ const typeDefs = gql`
 `;
 
 // helper functions
-const getAllUsers = () => users;
-const filterUsersByUserIds = userIds =>
-  users.filter(user => userIds.includes(user.id));
-const findUserByUserId = userId =>
-  users.find(user => user.id === Number(userId));
+const userModel = (users => {
+  const getOneById = id => users.find(user => user.id === Number(id));
+  return {
+    getOneById,
+    getAll: () => users,
+    getAllByIds: userIds => users.filter(user => userIds.includes(user.id)),
+    updateOne: (id, { name, age }) => {
+      const user = getOneById(id);
+      if (!user) throw new Error('User Not Found.');
+      return Object.assign(user, {
+        name: name || user.name,
+        age: age || user.age
+      });
+    }
+  };
+})(USERS);
 
-const getAllPosts = () => posts;
-const findPostByPostId = postId =>
-  posts.find(post => post.id === Number(postId));
-const filterPostsByUserId = userId =>
-  posts.filter(post => post.authorId === Number(userId));
-
-const updateUserInfo = (userId, data) =>
-  Object.assign(findUserByUserId(userId), data);
-const addPost = ({ authorId, title, body }) =>
-  (posts[posts.length] = {
-    id: posts.length + 1,
-    authorId,
-    title,
-    body,
-    likeGiverIds: [],
-    createdAt: new Date().toISOString()
-  });
-
-const updatePost = (postId, data) =>
-  Object.assign(findPostByPostId(postId), data);
+const postModel = (posts => {
+  let lastInsertedId = 2;
+  const getOneById = id => posts.find(post => post.id === Number(id));
+  return {
+    getOneById,
+    getAll: () => posts,
+    getAllByAuthorId: authorId =>
+      posts.filter(post => post.authorId === Number(authorId)),
+    createOne: ({ authorId, title, body }) => {
+      lastInsertedId += 1;
+      const post = {
+        id: lastInsertedId,
+        authorId,
+        title,
+        body,
+        likeGiverIds: [],
+        createdAt: new Date().toISOString()
+      };
+      posts.push(post);
+      return post;
+    },
+    updateOne: (id, { title, body }) => {
+      const post = getOneById(id);
+      if (!post) throw new Error('Post Not Found.');
+      return Object.assign(post, {
+        title: title || post.title,
+        body: body || post.body
+      });
+    },
+    addOneLikeGiver: (postId, userId) => {
+      const post = getOneById(postId);
+      if (!post) throw new Error('Post Not Found.');
+      if (post.likeGiverIds.includes(userId)) {
+        return post;
+      }
+      post.likeGiverIds.push(userId);
+      return post;
+    },
+    removeOneLikeGiver: (postId, userId) => {
+      const post = getOneById(postId);
+      if (!post) throw new Error('Post Not Found.');
+      if (post.likeGiverIds.includes(userId)) {
+        post.likeGiverIds = post.likeGiverIds.filter(id => id !== userId);
+        return post;
+      }
+      return post;
+    }
+  };
+})(POSTS);
 
 // 2. Resolvers 是一個會對照 Schema 中 field 的 function map ，讓你可以計算並回傳資料給 GraphQL Server
 // A resolver is a function that resolves a value for a type or field in a schema.
 const resolvers = {
   Query: {
     hello: () => 'world',
-    me: () => findUserByUserId(meId),
-    users: () => getAllUsers(),
-    user: (root, { id }, context) => findUserByUserId(id),
-    posts: () => getAllPosts(),
-    post: (root, { id }, context) => findPostByPostId(id)
+    me: () => userModel.getOneById(ME_ID),
+    users: () => userModel.getAll(),
+    user: (root, { id }, context) => userModel.getOneById(id),
+    posts: () => postModel.getAll(),
+    post: (root, { id }, context) => postModel.getOneById(id)
   },
   Mutation: {
-    updateMyInfo: (parent, { input }, context) => updateUserInfo(meId, input),
+    updateMyInfo: (parent, { input }, context) =>
+      userModel.updateOne(ME_ID, input),
 
     addPost: (parent, { input: { title, body } }, context) =>
-      addPost({ authorId: meId, title, body }),
+      postModel.createOne({ authorId: ME_ID, title, body }),
 
     likePost: (parent, { postId }, context) => {
-      const post = findPostByPostId(postId);
-
+      const post = postModel.getOneById(postId);
       if (!post) throw new Error(`Post ${postId} Not Exists`);
 
       // 如果尚未按過讚
-      if (!post.likeGiverIds.includes(meId)) {
-        return updatePost(postId, {
-          likeGiverIds: post.likeGiverIds.concat(meId)
-        });
+      if (!post.likeGiverIds.includes(ME_ID)) {
+        return postModel.addOneLikeGiver(postId, ME_ID);
       }
 
       // 如果已經按過讚，就取消
-      return updatePost(postId, {
-        likeGiverIds: post.likeGiverIds.filter(id => id !== meId)
-      });
+      return postModel.removeOneLikeGiver(postId, ME_ID);
     }
   },
   User: {
-    posts: (parent, args, context) => filterPostsByUserId(parent.id)
+    posts: (parent, args, context) => postModel.getAllByAuthorId(parent.id)
   },
   Post: {
-    author: (parent, args, context) => findUserByUserId(parent.authorId),
+    author: (parent, args, context) => userModel.getOneById(parent.authorId),
     likeGivers: (parent, args, context) =>
-      filterUsersByUserIds(parent.likeGiverIds)
+      userModel.getAllByIds(parent.likeGiverIds)
   }
 };
 
