@@ -3,7 +3,7 @@
 ![img](https://ithelp.ithome.com.tw/images/ironman/10th/iron-logo-10th.png)
 ![img](https://ithelp.ithome.com.tw/upload/images/20181016/20111997WWqgh86nkr.png)
 
-[![CircleCI](https://circleci.com/gh/FongX777/graphql-it30-tutorial.svg?style=svg)](https://circleci.com/gh/FongX777/graphql-it30-tutorial)
+[![CircleCI](https://circleci.com/gh/FongX777/graphql-it30-tutorial.svg?style=svg)](https://circleci.com/gh/FongX777/graphql-it30-tutorial) | [![codecov](https://codecov.io/gh/FongX777/graphql-it30-tutorial/branch/master/graph/badge.svg)](https://codecov.io/gh/FongX777/graphql-it30-tutorial)
 
 ## Overview
 
