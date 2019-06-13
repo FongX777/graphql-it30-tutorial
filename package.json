@@ -3,6 +3,7 @@
   "private": true,
   "devDependencies": {
     "apollo-server-testing": "^2.5.0",
+    "codecov": "^3.5.0",
     "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.17.2",
@@ -24,11 +25,14 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "__utils"
-    ]
+    ],
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true
   },
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist",
     "test": "lerna run test",
-    "lint": "eslint --ignore-path .gitignore ./projects"
+    "lint": "eslint --ignore-path .gitignore ./projects",
+    "codecov": "jest && codecov"
   }
 }
