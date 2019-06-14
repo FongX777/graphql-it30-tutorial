@@ -1,11 +1,12 @@
 # GraphQL Tutorial For ITHelp 30-day Ironman Contests
 
 ![img](https://ithelp.ithome.com.tw/images/ironman/10th/iron-logo-10th.png)
-![img](https://ithelp.ithome.com.tw/upload/images/20181016/20111997WWqgh86nkr.png)
 
-[![CircleCI](https://circleci.com/gh/FongX777/graphql-it30-tutorial.svg?style=svg)](https://circleci.com/gh/FongX777/graphql-it30-tutorial) | [![codecov](https://codecov.io/gh/FongX777/graphql-it30-tutorial/branch/master/graph/badge.svg)](https://codecov.io/gh/FongX777/graphql-it30-tutorial)
+[![CircleCI](https://img.shields.io/circleci/build/github/FongX777/graphql-it30-tutorial.svg?style=plastic)](https://circleci.com/gh/FongX777/graphql-it30-tutorial) [![codecov](https://img.shields.io/codecov/c/github/FongX777/graphql-it30-tutorial.svg?color=blue&style=plastic)](https://codecov.io/gh/FongX777/graphql-it30-tutorial) ![license](https://img.shields.io/badge/license-MIT-green.svg?style=plastic) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg?style=plastic)](https://lernajs.io/)
 
 ## Overview
+
+![img](https://ithelp.ithome.com.tw/upload/images/20181016/20111997WWqgh86nkr.png)
 
 This is a project to put all tutorial codes I mentioned in the ITHelp Ironman Contest. Here are some subprojects:
 
@@ -35,7 +36,7 @@ To run the project, first run these commands:
 
 ```bash
 $ npm install # installs lerna
-$ lerna bootstrap # connects all the packages
+$ npm run bootstrap # connects all the packages
 ```
 
 ## Techs
