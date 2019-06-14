@@ -2,7 +2,7 @@
 
 ![img](https://ithelp.ithome.com.tw/images/ironman/10th/iron-logo-10th.png)
 
-[![CircleCI](https://img.shields.io/circleci/build/github/FongX777/graphql-it30-tutorial.svg?style=plastic)](https://circleci.com/gh/FongX777/graphql-it30-tutorial) [![codecov](https://img.shields.io/codecov/c/github/FongX777/graphql-it30-tutorial.svg?color=blue&style=plastic)](https://codecov.io/gh/FongX777/graphql-it30-tutorial) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
+[![CircleCI](https://img.shields.io/circleci/build/github/FongX777/graphql-it30-tutorial.svg?style=plastic)](https://circleci.com/gh/FongX777/graphql-it30-tutorial) [![codecov](https://img.shields.io/codecov/c/github/FongX777/graphql-it30-tutorial.svg?color=blue&style=plastic)](https://codecov.io/gh/FongX777/graphql-it30-tutorial) ![license](https://img.shields.io/badge/license-MIT-green.svg?style=plastic) [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg?style=plastic)](https://lernajs.io/)
 
 ## Overview
 
@@ -36,7 +36,7 @@ To run the project, first run these commands:
 
 ```bash
 $ npm install # installs lerna
-$ lerna bootstrap # connects all the packages
+$ npm run bootstrap # connects all the packages
 ```
 
 ## Techs
