@@ -5,6 +5,8 @@
 
 [![CircleCI](https://circleci.com/gh/FongX777/graphql-it30-tutorial.svg?style=svg)](https://circleci.com/gh/FongX777/graphql-it30-tutorial) | [![codecov](https://codecov.io/gh/FongX777/graphql-it30-tutorial/branch/master/graph/badge.svg)](https://codecov.io/gh/FongX777/graphql-it30-tutorial)
 
+[![CircleCI](https://img.shields.io/circleci/build/github/FongX777/graphql-it30-tutorial.svg?style=plastic)](https://circleci.com/gh/FongX777/graphql-it30-tutorial) [![codecov](https://img.shields.io/codecov/c/github/FongX777/graphql-it30-tutorial.svg?color=blue&style=plastic)](https://codecov.io/gh/FongX777/graphql-it30-tutorial)
+
 ## Overview
 
 This is a project to put all tutorial codes I mentioned in the ITHelp Ironman Contest. Here are some subprojects:
