@@ -14,5 +14,8 @@
     "dataloader": "^1.4.0",
     "graphql": "^14.3.1",
     "sqlite3": "^4.0.9"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
   }
 }
