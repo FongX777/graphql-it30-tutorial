@@ -5,6 +5,7 @@ const db = new sqlite3.Database(':memory:');
 const { promisify } = require('util');
 db.get = promisify(db.get);
 db.all = promisify(db.all);
+let a;
 
 // run in serial
 db.serialize(function () {
