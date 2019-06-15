@@ -42,15 +42,13 @@ class StoreModel {
   }
 
   getAll () {
-    const sql = 'SELECT * FROM store';
-    console.log('storeModel: getAll', sql);
-    return this.db.all(sql);
+    console.log('store: getAll');
+    return this.db.all('SELECT * FROM store');
   }
 
   findById (id) {
-    const sql = 'SELECT * FROM store WHERE id = ?';
-    console.log('storeModel: findById', sql, id);
-    return this.db.get(sql, [id]);
+    console.log('store: findById');
+    return this.db.get('SELECT * FROM store WHERE id = ?', [id]);
   }
 }
 
@@ -60,9 +58,8 @@ class ProductModel {
   }
 
   findById (id) {
-    const sql = 'SELECT * FROM product WHERE id = ?';
-    console.log('productModel: findById', sql, id);
-    return this.db.get(sql, [id]);
+    console.log('product: findById');
+    return this.db.get('SELECT * FROM product WHERE id = ?', [id]);
   }
 
   findAllByIds (ids) {
@@ -70,19 +67,21 @@ class ProductModel {
       'SELECT * FROM product WHERE id IN (' +
       ids.map(() => '?').join(',') +
       ')';
-    console.log('productModel: findByIds', sql, ids);
+    console.log('product: findByIds', sql, ids);
     return this.db.all(sql, ids);
   }
 
   findAllByStoreId (storeId, price = 0) {
-    const sql = `SELECT p.*
+    console.log('product: findAllByStoreId', storeId, price);
+    return this.db.all(
+      `SELECT p.*
       FROM product p 
       INNER JOIN store s ON s.id = p.store
       WHERE s.id = ? 
         AND price > ?
-      `;
-    console.log('productModel: findAllByStoreId', storeId, price);
-    return this.db.all(sql, [storeId, price]);
+      `,
+      [storeId, price]
+    );
   }
 }
 
@@ -91,6 +90,7 @@ const typeDefs = gql`
     stores: [Store]
     store(id: ID): Store
   }
+
   type Store {
     id: ID
     name: String
@@ -100,15 +100,10 @@ const typeDefs = gql`
       """
       price: Int
     ): [Product]
-    products_dl(
-      """
-      price bottom line
-      """
-      price: Int
-    ): [Product]
     product(id: ID!): Product
     productsByIds(ids: [ID!]!): [Product]
   }
+
   type Product {
     id: ID
     name: String
@@ -126,16 +121,12 @@ const resolvers = {
     }
   },
   Store: {
-    products_dl: (store, { price = 0 }, { productModel, dataloaders }) => {
+    products: (store, { price = 0 }, { productModel, dataloaders }) => {
       // return productModel.findAllByStoreId(store.id, price)
-      return dataloaders.product.load({ storeId: store.id });
-    },
-    products: (store, { price = 0 }, { productModel }) => {
-      return productModel.findAllByStoreId(store.id);
+      return dataloaders.product.load({ storeId: store.id, price });
     },
     product: async (_, { id }, { productModel, dataloaders }) => {
-      const product = await dataloaders.product.load(id);
-      return product;
+      return productModel.findById(id);
     },
     productsByIds: (store, { ids }, { productModel }) => {
       return productModel.findAllByIds(ids.map(id => Number(id)));
@@ -181,3 +172,36 @@ const server = new ApolloServer({
 server.listen().then(({ url }) => {
   console.log(`Server ready at ${url}`);
 });
+
+// reference: https://github.com/graphql/dataloader/blob/master/examples/SQL.md
+/* try this query:
+{
+  stores {
+    id
+    name
+    a: products (price: 3000) {
+      id
+      name
+      price
+    }
+    b: products (price: 3000) {
+      id
+      name
+      price
+    }
+
+  }
+}
+---
+before dataloader:
+store: getAll
+product: findAllByStoreId 1 3000
+product: findAllByStoreId 1 3000
+product: findAllByStoreId 2 3000
+product: findAllByStoreId 2 3000
+---
+after dataloader:
+store: getAll
+product: findAllByStoreId 1 3000
+product: findAllByStoreId 2 3000
+*/
