@@ -42,13 +42,15 @@ class StoreModel {
   }
 
   getAll () {
-    console.log('store: getAll');
-    return this.db.all('SELECT * FROM store');
+    const sql = 'SELECT * FROM store';
+    console.log('storeModel: getAll', sql);
+    return this.db.all(sql);
   }
 
   findById (id) {
-    console.log('store: findById');
-    return this.db.get('SELECT * FROM store WHERE id = ?', [id]);
+    const sql = 'SELECT * FROM store WHERE id = ?';
+    console.log('storeModel: findById', sql, id);
+    return this.db.get(sql, [id]);
   }
 }
 
@@ -58,8 +60,9 @@ class ProductModel {
   }
 
   findById (id) {
-    console.log('product: findById');
-    return this.db.get('SELECT * FROM product WHERE id = ?', [id]);
+    const sql = 'SELECT * FROM product WHERE id = ?';
+    console.log('productModel: findById', sql, id);
+    return this.db.get(sql, [id]);
   }
 
   findAllByIds (ids) {
@@ -67,21 +70,19 @@ class ProductModel {
       'SELECT * FROM product WHERE id IN (' +
       ids.map(() => '?').join(',') +
       ')';
-    console.log('product: findByIds', sql, ids);
+    console.log('productModel: findByIds', sql, ids);
     return this.db.all(sql, ids);
   }
 
   findAllByStoreId (storeId, price = 0) {
-    console.log('product: findAllByStoreId', storeId, price);
-    return this.db.all(
-      `SELECT p.*
+    const sql = `SELECT p.*
       FROM product p 
       INNER JOIN store s ON s.id = p.store
       WHERE s.id = ? 
         AND price > ?
-      `,
-      [storeId, price]
-    );
+      `;
+    console.log('productModel: findAllByStoreId', storeId, price);
+    return this.db.all(sql, [storeId, price]);
   }
 }
 
@@ -94,6 +95,12 @@ const typeDefs = gql`
     id: ID
     name: String
     products(
+      """
+      price bottom line
+      """
+      price: Int
+    ): [Product]
+    products_dl(
       """
       price bottom line
       """
@@ -119,7 +126,7 @@ const resolvers = {
     }
   },
   Store: {
-    products: (store, { price = 0 }, { productModel, dataloaders }) => {
+    products_dl: (store, { price = 0 }, { productModel, dataloaders }) => {
       // return productModel.findAllByStoreId(store.id, price)
       return dataloaders.queryLoader
         .load([
@@ -129,8 +136,10 @@ const resolvers = {
         ])
         .then(rows => rows.map(row => dataloaders.product.load(row.id)));
     },
+    products: (store, { price = 0 }, { productModel }) => {
+      return productModel.findAllByStoreId(store.id);
+    },
     product: async (_, { id }, { productModel, dataloaders }) => {
-      // return productModel.findById(id)
       const product = await dataloaders.product.load(id);
       return product;
     },
@@ -158,7 +167,6 @@ const server = new ApolloServer({
               const results = [];
               db.parallelize(() => {
                 queries.forEach(async (query, index) => {
-                  // db.all()
                   try {
                     const result = await db.all(...query);
                     results[index] = result;
@@ -171,7 +179,7 @@ const server = new ApolloServer({
                 });
               });
             }),
-          { cache: false }
+          { cache: true }
         ),
         product: new DataLoader(async productIds => {
           const products = await productModel.findAllByIds(productIds);
