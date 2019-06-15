@@ -90,7 +90,6 @@ const typeDefs = gql`
     stores: [Store]
     store(id: ID): Store
   }
-
   type Store {
     id: ID
     name: String
@@ -103,7 +102,6 @@ const typeDefs = gql`
     product(id: ID!): Product
     productsByIds(ids: [ID!]!): [Product]
   }
-
   type Product {
     id: ID
     name: String
@@ -123,10 +121,18 @@ const resolvers = {
   Store: {
     products: (store, { price = 0 }, { productModel, dataloaders }) => {
       // return productModel.findAllByStoreId(store.id, price)
-      return dataloaders.product.load({ storeId: store.id, price });
+      return dataloaders.queryLoader
+        .load([
+          'SELECT p.id id FROM product p INNER JOIN store s ON s.id = p.store WHERE s.id = ? AND p.price > ?',
+          store.id,
+          price
+        ])
+        .then(rows => rows.map(row => dataloaders.product.load(row.id)));
     },
     product: async (_, { id }, { productModel, dataloaders }) => {
-      return productModel.findById(id);
+      // return productModel.findById(id)
+      const product = await dataloaders.product.load(id);
+      return product;
     },
     productsByIds: (store, { ids }, { productModel }) => {
       return productModel.findAllByIds(ids.map(id => Number(id)));
@@ -145,25 +151,34 @@ const server = new ApolloServer({
       storeModel,
       productModel,
       dataloaders: {
-        product: new DataLoader(
-          async keys => {
-            const results = await Promise.all(
-              // keys are automatically JSON.parsed
-              keys.map(({ storeId, price }) =>
-                productModel.findAllByStoreId(storeId, price)
-              )
-            );
-            return results;
-          },
-          {
-            cacheKeyFn: ({ storeId, price }) => {
-              return JSON.stringify({
-                storeId,
-                price
+        queryLoader: new DataLoader(
+          queries =>
+            new Promise(resolve => {
+              let waitingOn = queries.length;
+              const results = [];
+              db.parallelize(() => {
+                queries.forEach(async (query, index) => {
+                  // db.all()
+                  try {
+                    const result = await db.all(...query);
+                    results[index] = result;
+                  } catch (error) {
+                    results[index] = error;
+                  }
+                  if (--waitingOn === 0) {
+                    resolve(results);
+                  }
+                });
               });
-            }
-          }
-        )
+            }),
+          { cache: false }
+        ),
+        product: new DataLoader(async productIds => {
+          const products = await productModel.findAllByIds(productIds);
+          return products.sort(
+            (a, b) => productIds.indexOf(a.id) - productIds.indexOf(b.id)
+          );
+        })
       }
     };
   }
@@ -174,34 +189,3 @@ server.listen().then(({ url }) => {
 });
 
 // reference: https://github.com/graphql/dataloader/blob/master/examples/SQL.md
-/* try this query:
-{
-  stores {
-    id
-    name
-    a: products (price: 3000) {
-      id
-      name
-      price
-    }
-    b: products (price: 3000) {
-      id
-      name
-      price
-    }
-
-  }
-}
----
-before dataloader:
-store: getAll
-product: findAllByStoreId 1 3000
-product: findAllByStoreId 1 3000
-product: findAllByStoreId 2 3000
-product: findAllByStoreId 2 3000
----
-after dataloader:
-store: getAll
-product: findAllByStoreId 1 3000
-product: findAllByStoreId 2 3000
-*/
